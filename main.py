@@ -17,21 +17,22 @@ data_category = pd.concat([data_genre_doc, data_genre_others], axis = 1)
 data_titre = data['title']
 
 cpt=0
-cat_node_unique = []
+cat_unique = []
+dico = dict()
 for title in data['title']:
     titre = Node("Titre du film", name=title)
     for cat in data_category:
         if data[cat].iloc[cpt] == 1:
-            #if cat not in cat_node_unique:
-            catego = Node("Categorie de film", name=cat)
-                #cat_node_unique.append(cat)
-            res = Relationship(titre, "KNOWS", catego)
-            connect.create(res)
+            if cat not in cat_unique:
+                catego = Node("Categorie de film", name=cat)
+                dico[cat] = catego
+                cat_unique.append(cat)
+                res = Relationship(titre, "KNOWS", catego)
+                connect.create(res)
 
-            #elif cat in cat_node_unique:
-
-                #res = Relationship(titre, "KNOWS", catego)
-                #connect.create(res)
+            elif cat in cat_unique:
+                res = Relationship(titre, "KNOWS", dico[cat])
+                connect.create(res)
 
     cpt = cpt+1
 
